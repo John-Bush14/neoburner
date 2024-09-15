@@ -2,7 +2,7 @@ local M = {}
 
 
 Websockets = require("lua-websockets")
-Json = require("lua-cjson")
+local json = require('plenary.json')
 
 
 function M.connect(auth_token, port)
