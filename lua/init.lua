@@ -12,8 +12,18 @@ function M.setup(config)
    local auth_token = config.auth_token
    local port = config.port
 
-   
+
    local connection = Api.connect(auth_token, port)
+end
+
+
+function M.show_ram()
+
+end
+
+
+function M.pull_files()
+
 end
 
 
