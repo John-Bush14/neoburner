@@ -20,7 +20,7 @@ require("neoburner").setup({
     filesystem = "~/bitburner_files" -- where bitburner filesystem will be placed
 
     -- optional
-    addres = "127.0.0.1" -- = localhost
+    address = "127.0.0.1" -- = localhost
 })
 ```
 
