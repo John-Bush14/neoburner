@@ -3,18 +3,16 @@ local M = {}
 
 local inputChecker = require("neoburner.inputChecker")
 local api = require("neoburner.api")
-
+local new_client = require("lua-websockets.src.websocket.client_sync")
 
 function M.setup(config)
    inputChecker.config(config)
 
    M.config = config
 
-   local auth_token = config.auth_token
-   local port = config.port
-   local address = config.address
+   M.client = new_client()
 
-   M.connection = api.connect(auth_token, port, address)
+   M.check_connection = api.connect
 end
 
 
