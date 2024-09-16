@@ -2,14 +2,14 @@ local M = {}
 
 
 local inputChecker = require("neoburner.inputChecker")
-local new_api = require("neoburner.api")
+local new_client = require("neoburner.client")
 
 function M.setup(config)
    inputChecker.config(config)
 
    M.config = config
 
-   M.api = new_api(config)
+   M.client = new_client(config)
 end
 
 
