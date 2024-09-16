@@ -43,7 +43,7 @@ function M.config(config)
    })
 
    assert_config(config, "optional", {
-      adress = str
+      address = "ws://127.0.0.1"
    })
 end
 
