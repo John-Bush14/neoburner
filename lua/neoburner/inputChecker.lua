@@ -1,10 +1,6 @@
 local M = {}
 
 
-local str = "string"
-local  = "number"
-
-
 local function assert_type(config, key, correct_type)
    local config_type = type(config[key])
 
@@ -35,15 +31,19 @@ local function assert_config(config, optionality, keys)
 end
 
 
+local str = "string"
+local int = "number"
+
+
 function M.config(config)
    assert_config(config, "required", {
-      auth_token = "string",
-      port = "number",
-      filesystem = "string"
+      auth_token = str,
+      port = int,
+      filesystem = str
    })
 
    assert_config(config, "optional", {
-      adress = "string"
+      adress = str
    })
 end
 
