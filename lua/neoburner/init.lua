@@ -11,9 +11,10 @@ function M.setup(config)
 
    local auth_token = config.auth_token
    local port = config.port
+   local address = config.address
 
 
-   local connection = api.connect(auth_token, port)
+   local connection = api.connect(auth_token, port, address)
 end
 
 
