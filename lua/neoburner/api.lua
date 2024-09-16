@@ -1,7 +1,7 @@
 local M = {}
 
 
-local websockets = require("neoburner.lua-websockets.src.websocket.client")
+local websockets = require("lua-websockets.src.websocket.client")
 local json = require('plenary.json')
 
 
