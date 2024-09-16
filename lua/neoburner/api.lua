@@ -1,16 +1,26 @@
-local m = {}
+local API = {}
 
 
 local json = require('plenary.json')
+local new_client = require("lua-websockets.src.websocket.client_sync")
 
 
-function m.connect(M)
-   local client = M.client
+local function new(config)
+   API.address = config.address
+   API.port = config.port
+   API.client = new_client()
 
-   if client.state ~= "CLOSED" then return end
-
-   client.connect(client, M.address .. ":" .. M.port)
+   return API
 end
 
 
-return m
+function API:connect()
+   local client = API.client
+
+   if client.state ~= "CLOSED" then return end
+
+   client.connect(client, API.address .. ":" .. API.port)
+end
+
+
+return new
