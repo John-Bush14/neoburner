@@ -14,12 +14,12 @@ end
 
 
 function M.show_ram()
-   M.client.check_connection()
+   M.client:connect()
 end
 
 
 function M.pull_files()
-   M.client.check_connection()
+   M.client:connect()
 end
 
 
