@@ -42,8 +42,11 @@ function M.config(config)
       filesystem = str
    })
 
+   if (type(config.servers) == str) then config.servers = {config.servers} end
+
    assert_config(config, "optional", {
-      address = "ws://127.0.0.1"
+      address = "ws://127.0.0.1",
+      servers = {"home"}
    })
 end
 
