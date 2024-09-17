@@ -21,8 +21,6 @@ function CLIENT:connect()
    if client.state ~= "CLOSED" then return end
 
    client.connect(client, CLIENT.address .. ":" .. CLIENT.port)
-
-   return client.receive(client)
 end
 
 
@@ -32,10 +30,12 @@ function CLIENT:send_and_receive(data)
    local client = CLIENT.client
 
    client.send(client, data, nil)
+
+   return client.receive(client)
 end
 
 
-function CLIENT:generate_message(method, params) 
+function CLIENT:generate_message(method, params)
    local message = {
       jsonrpc = "2.0",
       id = CLIENT.next_id,
