@@ -20,6 +20,8 @@ function CLIENT:connect()
    if client.state ~= "CLOSED" then return end
 
    client.connect(client, CLIENT.address .. ":" .. CLIENT.port)
+
+   return client.receive(client)
 end
 
 
@@ -29,6 +31,9 @@ function CLIENT:send_and_receive(data)
    local client = CLIENT.client
 
    client.send(client, data, nil)
+
+
+
 end
 
 
