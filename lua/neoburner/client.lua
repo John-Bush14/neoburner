@@ -24,6 +24,8 @@ end
 
 
 function CLIENT:send_and_receive(data)
+   CLIENT:connect()
+
    local client = CLIENT.client
 
    client.send(client, data, nil)
