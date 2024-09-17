@@ -23,4 +23,11 @@ function CLIENT:connect()
 end
 
 
+function CLIENT:send_and_receive(data)
+   local client = CLIENT.client
+
+   client.send(client, data, nil)
+end
+
+
 return new
