@@ -1,7 +1,6 @@
 local CLIENT = {}
 
 
-local json = require('plenary.json')
 local new_client = require("lua-websockets.src.websocket.client_sync")
 
 
@@ -24,12 +23,12 @@ function CLIENT:connect()
 end
 
 
-function CLIENT:send_and_receive(data)
+function CLIENT:send_and_receive(message)
    CLIENT:connect()
 
    local client = CLIENT.client
 
-   client.send(client, data, nil)
+   client.send(client, vim.fn.json_encode(message), nil)
 
    return client.receive(client)
 end

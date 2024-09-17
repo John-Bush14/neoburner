@@ -4,9 +4,6 @@
 ```lua
 {
     "John-Bush14/neoburner",
-    dependencies = {
-        "nvim-lua/plenary.nvim"
-    }
 }
 ```
 
