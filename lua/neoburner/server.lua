@@ -12,11 +12,12 @@ local function new(config)
 end
 
 
-function SERVER:start_listening()
+function SERVER:start_listening(on_message)
    SERVER.server = WebsocketServer.listen({
       port = SERVER.port,
       default = function(ws)
          SERVER.connection = ws
+         ws:on_message(on_message)
       end
    })
 
@@ -24,13 +25,11 @@ function SERVER:start_listening()
 end
 
 
-function SERVER:send_and_receive(method, params)
+function SERVER:send_message(method, params)
    local message = SERVER:generate_message(method, params)
-   local client = SERVER.client
+   local ws = SERVER.connection
 
-   client.send(client, vim.fn.json_encode(message), nil)
-
-   return client.receive(client)
+   ws:send(vim.fn.json_encode(message))
 end
 
 
