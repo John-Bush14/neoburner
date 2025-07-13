@@ -2,7 +2,7 @@ local M = {}
 
 
 local inputChecker = require("neoburner.inputChecker")
-local new_server = require("neoburner.client")
+local new_server = require("neoburner.server")
 
 function M.setup(config)
    inputChecker.config(config)
