@@ -1,32 +1,34 @@
-local CLIENT = {}
+local SERVER = {}
 
-
-local new_client = require("lua-websockets.src.websocket.client_sync")
-
+local WebsocketServer = require('websocket').server.copas
+local copas = require("copas")
 
 local function new(config)
-   CLIENT.address = config.address
-   CLIENT.port = config.port
-   CLIENT.client = new_client()
-   CLIENT.next_id = 1
+   SERVER.address = config.address
+   SERVER.port = config.port
+   SERVER.next_id = 1
 
-   return CLIENT
+   return SERVER
 end
 
 
-function CLIENT:connect()
-   local client = CLIENT.client
+function SERVER:connect()
+   SERVER.server = WebsocketServer.listen({
+      port = SERVER.port,
+      default = function(ws)
+         SERVER.connection = ws
+      end
+   })
 
-   if client.state ~= "CLOSED" then return end
-
-   client.connect(client, CLIENT.address .. ":" .. CLIENT.port)
+   copas.loop()
 end
 
 
-function CLIENT:send_and_receive(message)
-   CLIENT:connect()
+function SERVER:send_and_receive(method, params)
+   if SERVER.server == nil then SERVER:connect() end
 
-   local client = CLIENT.client
+   local message = SERVER:generate_message(method, params)
+   local client = SERVER.client
 
    client.send(client, vim.fn.json_encode(message), nil)
 
@@ -34,15 +36,15 @@ function CLIENT:send_and_receive(message)
 end
 
 
-function CLIENT:generate_message(method, params)
+function SERVER:generate_message(method, params)
    local message = {
       jsonrpc = "2.0",
-      id = CLIENT.next_id,
+      id = SERVER.next_id,
       method = method,
       params = params
    }
 
-   CLIENT.next_id = CLIENT.next_id + 1
+   SERVER.next_id = SERVER.next_id + 1
 
    return message
 end

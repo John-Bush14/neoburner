@@ -1,3 +1,0 @@
-[submodule "lua-websockets"]
-	path = lua/lua-websockets
-	url = https://github.com/lipp/lua-websockets
