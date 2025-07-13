@@ -29,6 +29,8 @@ function SERVER:send_message(method, params)
    local message = SERVER:generate_message(method, params)
    local ws = SERVER.connection
 
+   if ws == nil then error("Bitburner not connected.") end
+
    ws:send(vim.fn.json_encode(message))
 end
 
