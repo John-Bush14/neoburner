@@ -12,7 +12,7 @@ local function new(config)
 end
 
 
-function SERVER:connect()
+function SERVER:start_listening()
    SERVER.server = WebsocketServer.listen({
       port = SERVER.port,
       default = function(ws)
@@ -25,8 +25,6 @@ end
 
 
 function SERVER:send_and_receive(method, params)
-   if SERVER.server == nil then SERVER:connect() end
-
    local message = SERVER:generate_message(method, params)
    local client = SERVER.client
 
