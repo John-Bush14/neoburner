@@ -1,7 +1,7 @@
 local SERVER = {}
 
-local WebsocketServer = require('websocket').server.copas
-local copas = require("copas")
+local WebsocketServer = require('websocket').server.ev
+local ev = require("ev")
 
 local function new(config)
    SERVER.address = config.address
@@ -20,7 +20,7 @@ function SERVER:start_listening()
       end
    })
 
-   copas.loop()
+   coroutine.resume(coroutine.create(ev.Loop.default.loop))
 end
 
 
