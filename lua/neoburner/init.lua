@@ -10,12 +10,12 @@ function M.setup(config)
    M.config = config
 
    M.server = new_server(config)
-   M.server:start_listening(function(msg) print(msg) end)
+   M.server:start_server(function(msg) error(msg) end)
 end
 
 
 function M.show_ram()
-   M.server:send_message("getFile", {filename = "", server = "home"})
+   M.server:use_remote_method("getFile", {filename = "", server = "home"})
 end
 
 

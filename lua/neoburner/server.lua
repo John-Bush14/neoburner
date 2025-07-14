@@ -12,7 +12,6 @@ local function new(config)
 end
 
 
-function SERVER:start_listening(on_message)
    SERVER.server = WebsocketServer.listen({
       port = SERVER.port,
       default = function(ws)
@@ -25,11 +24,12 @@ function SERVER:start_listening(on_message)
 end
 
 
-function SERVER:send_message(method, params)
    local message = SERVER:generate_message(method, params)
    local ws = SERVER.connection
+function SERVER:start_server(on_data)
 
    if ws == nil then error("Bitburner not connected.") end
+function SERVER:use_remote_method(method, params)
 
    ws:send(vim.fn.json_encode(message))
 end
