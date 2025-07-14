@@ -4,7 +4,6 @@
 ```lua
 {
     "John-Bush14/neoburner",
-    dependencies = {"John-Bush14/lua-websockets-lazy-compatble"}
 }
 ```
 

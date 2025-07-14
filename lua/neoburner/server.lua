@@ -1,7 +1,7 @@
 local SERVER = {}
 
-local WebsocketServer = require('websocket').server.ev
-local ev = require("ev")
+local in_pipe_path = "/tmp/bitburners_in"
+local out_pipe_path = "/tmp/bitburners_out"
 
 local function new(config)
    SERVER.address = config.address
@@ -12,18 +12,10 @@ local function new(config)
 end
 
 
-   SERVER.server = WebsocketServer.listen({
-      port = SERVER.port,
-      default = function(ws)
-         SERVER.connection = ws
-         ws:on_message(on_message)
-      end
-   })
 local function file_is_in_use(file)
    local handle = io.popen("lsof " .. out_pipe_path .. " 2>/dev/null")
    if not handle then error("couldn't get if websocket server was running.") end
 
-   coroutine.resume(coroutine.create(ev.Loop.default.loop))
    local result = handle:read("a") ~= ""
 
    handle:close()
@@ -32,14 +24,30 @@ local function file_is_in_use(file)
 end
 
 
-   local message = SERVER:generate_message(method, params)
-   local ws = SERVER.connection
 function SERVER:start_server(on_data)
+   os.execute("mkfifo " .. out_pipe_path .. " " .. in_pipe_path .. " 2>/dev/null")
 
-   if ws == nil then error("Bitburner not connected.") end
+   if not file_is_in_use(out_pipe_path) then
+      vim.fn.jobstart("websocat --exit-on-eof -s " .. SERVER.port .. " > " .. out_pipe_path .. " < " .. in_pipe_path .. " & disown", {shell = true})
+      vim.fn.jobstart("exec 3> " .. in_pipe_path .. " & disown", {shell = true})
+   end
+
+   SERVER.in_pipe = vim.loop.new_pipe(false)
+   vim.loop.fs_open(out_pipe_path, "r", 438, function(_err, fd) SERVER.in_pipe:open(fd) end)
+   vim.loop.fs_open(in_pipe_path, "w", 420, function(_err, fd) SERVER.out_fd = fd  end)
+
+   SERVER.in_pipe:read_start(function(err, data)
+      if err then error(err) end
+
+      if data then on_data(data) end
+   end)
+end
+
+
 function SERVER:use_remote_method(method, params)
+   local message = SERVER:generate_message(method, params)
 
-   ws:send(vim.fn.json_encode(message))
+   vim.loop.fs_write(SERVER.out_fd, message, 0, function(err, msg) error(err .. msg) end)
 end
 
 
