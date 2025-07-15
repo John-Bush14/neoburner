@@ -2,6 +2,7 @@ local SERVER = {}
 
 local in_pipe_path = "/tmp/bitburners_in"
 local out_pipe_path = "/tmp/bitburners_out"
+local websocat_start_file = "/scripts/start_websocat.py"
 
 local function new(config)
    SERVER.address = config.address
@@ -28,8 +29,15 @@ function SERVER:start_server(on_data)
    os.execute("mkfifo " .. out_pipe_path .. " " .. in_pipe_path .. " 2>/dev/null")
 
    if not file_is_in_use(out_pipe_path) then
-      vim.fn.jobstart("websocat --exit-on-eof -s " .. SERVER.port .. " > " .. out_pipe_path .. " < " .. in_pipe_path .. " & disown", {shell = true})
-      vim.fn.jobstart("exec 3> " .. in_pipe_path .. " & disown", {shell = true})
+      local websocat_starter_filepath = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h:h:h") .. websocat_start_file
+
+      local websocat_start_command = {"python3", websocat_starter_filepath, in_pipe_path, out_pipe_path, SERVER.port}
+
+      vim.fn.jobstart(websocat_start_command, {
+         detach = true,
+         stdout = nil,
+         stderr = nil
+      })
    end
 
    SERVER.in_pipe = vim.loop.new_pipe(false)
