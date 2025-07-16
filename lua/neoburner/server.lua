@@ -42,7 +42,8 @@ function SERVER:start_server(on_data)
 
    SERVER.in_pipe = vim.loop.new_pipe(false)
    vim.loop.fs_open(out_pipe_path, "r", 438, function(_err, fd) SERVER.in_pipe:open(fd) end)
-   vim.loop.fs_open(in_pipe_path, "w", 420, function(_err, fd) SERVER.out_fd = fd  end)
+   SERVER.out_fd = io.open(in_pipe_path, "w+b")
+
 
    SERVER.in_pipe:read_start(function(err, data)
       if err then error(err) end
@@ -55,7 +56,8 @@ end
 function SERVER:use_remote_method(method, params)
    local message = SERVER:generate_message(method, params)
 
-   vim.loop.fs_write(SERVER.out_fd, message, 0, function(err, msg) error(err .. msg) end)
+   SERVER.out_fd:write(message)
+   SERVER.out_fd:flush()
 end
 
 
