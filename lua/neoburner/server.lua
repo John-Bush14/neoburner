@@ -54,7 +54,7 @@ end
 
 
 function SERVER:use_remote_method(method, params)
-   local message = SERVER:generate_message(method, params)
+   local message = vim.fn.json_encode(SERVER:generate_message(method, params)) .. "\n"
 
    SERVER.out_fd:write(message)
    SERVER.out_fd:flush()
