@@ -56,11 +56,24 @@ end
 function SERVER:use_remote_method(method, params, on_answer)
    local message = vim.fn.json_encode(SERVER:generate_message(method, params)) .. "\n"
 
+   local id = SERVER.next_id - 1
+
    SERVER.out_fd:write(message)
    SERVER.out_fd:flush()
+
    vim.loop.read_start(SERVER.in_pipe, function(err, data)
+      if err then error("Error occured while trying to read answer from " .. out_pipe_path .. ": " .. err) end
+
+      -- json decode can't run in fast event context
+      vim.schedule(function()
          data = vim.fn.json_decode(data)
+
+         if data.id ~= id then error("Sending multiple requests at the same time is not suppored!") end
+
+         if data.error then error("jsonrpc request returned error: " .. data.error) end
+
          on_answer(data)
+      end)
    end)
 end
 
