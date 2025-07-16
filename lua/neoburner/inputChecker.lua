@@ -14,25 +14,19 @@ end
 
 local function assert_config(config, optionality, keys)
    for key, item in pairs(keys) do
-      local correct_type = ""
-
       if optionality == "required" then
          assert(config[key], "'" .. key .. "' missing from neoburner config (required)")
-
-         correct_type = item
       else
          if config[key] == nil then config[key] = item end
-
-         correct_type = type(item)
       end
 
-      assert_type(config, key, correct_type)
+      assert_type(config, key, type(item))
    end
 end
 
 
 local str = "string"
-local int = "number"
+local int = 0
 
 
 function M.config(config)
