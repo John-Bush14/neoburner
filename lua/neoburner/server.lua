@@ -53,11 +53,15 @@ function SERVER:start_server(on_data)
 end
 
 
-function SERVER:use_remote_method(method, params)
+function SERVER:use_remote_method(method, params, on_answer)
    local message = vim.fn.json_encode(SERVER:generate_message(method, params)) .. "\n"
 
    SERVER.out_fd:write(message)
    SERVER.out_fd:flush()
+   vim.loop.read_start(SERVER.in_pipe, function(err, data)
+         data = vim.fn.json_decode(data)
+         on_answer(data)
+   end)
 end
 
 

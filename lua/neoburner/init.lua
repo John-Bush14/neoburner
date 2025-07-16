@@ -15,7 +15,7 @@ end
 
 
 function M.show_ram()
-   M.server:use_remote_method("getFile", {filename = "", server = "home"})
+   M.server:use_remote_method("getFile", {filename = "", server = "home"}, function(data) print(data.id) end)
 end
 
 
