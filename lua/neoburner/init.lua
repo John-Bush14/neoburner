@@ -15,11 +15,14 @@ end
 
 
 function M.show_ram()
-   M.server:use_remote_method("getFile", {filename = "", server = "home"}, function(data) print(data.id) end)
+   M.server:use_remote_method("getFile", {filename = "spread.js", server = "home"}, function(data) print(data.result) end)
 end
 
 
-function M.pull_files()
+function M.pull_files(server)
+end
+
+function M.push_files(server)
 end
 
 

@@ -16,7 +16,7 @@ require("neoburner").setup({
 
     -- optional
     address = "ws://127.0.0.1", -- = localhost
-    servers = {"home"} -- servers wich will be able to be edited, can also be set to "*"
+    servers = {"home"} -- servers wich will be in filesystem, cannot be set to "*" because of api limitations.
     port = "12525"
 })
 ```
@@ -32,3 +32,9 @@ Shows screen breaking down ram usage.
 
 Overwrites all files or only the files of \<server> with the game's savefile's files.
 Can also be used to temporarily add a server to the filesystem without adding it to servers in config.
+:edit will also pull the games savefile's files to the affected buffer(s).
+
+##### :BBPush ?\<server>
+
+Overwrites all files or only the files of \<server> of the game's savefile's with you're local files.
+:write will also push the affected buffer(s) to the game's savefile.
