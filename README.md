@@ -12,13 +12,12 @@
 ```lua
 require("neoburner").setup({
     -- needed
-    api_key = "*******"
-    port = "*****"
     filesystem = "~/bitburner_files" -- where bitburner filesystem will be placed
 
     -- optional
     address = "ws://127.0.0.1", -- = localhost
     servers = {"home"} -- servers wich will be able to be edited, can also be set to "*"
+    port = "12525"
 })
 ```
 
