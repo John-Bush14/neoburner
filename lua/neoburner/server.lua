@@ -41,11 +41,33 @@ function SERVER:start_server()
    end
 
    SERVER.in_pipe = vim.loop.new_pipe(false)
-   vim.loop.fs_open(out_pipe_path, "r", 438, function(_err, fd) SERVER.in_pipe:open(fd) end)
    SERVER.out_fd = io.open(in_pipe_path, "w+b")
 
+   SERVER.answer_handlers = {}
 
+   vim.loop.fs_open(out_pipe_path, "r", 438, function(_, fd)
+      SERVER.in_pipe:open(fd)
 
+      vim.loop.read_start(SERVER.in_pipe, function(err, data)
+
+         if err then error("Error occured while trying to read answer from " .. out_pipe_path .. ": " .. err) end
+
+         if data == nil then error("Something went wrong with websocat server (server stdout EOF)") end
+
+         -- json decode can't run in fast event context
+         vim.schedule(function()
+
+            data = vim.fn.json_decode(data)
+
+            local answer_handler = SERVER.answer_handlers[data.id]
+
+            if answer_handler == nil then return end
+
+            if data.error then error("jsonrpc request returned error: " .. data.error) end
+
+            answer_handler(data)
+         end)
+      end)
    end)
 end
 
@@ -58,20 +80,7 @@ function SERVER:use_remote_method(method, params, on_answer)
    SERVER.out_fd:write(message)
    SERVER.out_fd:flush()
 
-   vim.loop.read_start(SERVER.in_pipe, function(err, data)
-      if err then error("Error occured while trying to read answer from " .. out_pipe_path .. ": " .. err) end
-
-      -- json decode can't run in fast event context
-      vim.schedule(function()
-         data = vim.fn.json_decode(data)
-
-         if data.id ~= id then error("Sending multiple requests at the same time is not suppored!") end
-
-         if data.error then error("jsonrpc request returned error: " .. data.error) end
-
-         on_answer(data)
-      end)
-   end)
+   SERVER.answer_handlers[id] = on_answer
 end
 
 
