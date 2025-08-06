@@ -25,7 +25,7 @@ local function file_is_in_use(file)
 end
 
 
-function SERVER:start_server(on_data)
+function SERVER:start_server()
    os.execute("mkfifo " .. out_pipe_path .. " " .. in_pipe_path .. " 2>/dev/null")
 
    if not file_is_in_use(out_pipe_path) then
@@ -45,10 +45,7 @@ function SERVER:start_server(on_data)
    SERVER.out_fd = io.open(in_pipe_path, "w+b")
 
 
-   SERVER.in_pipe:read_start(function(err, data)
-      if err then error(err) end
 
-      if data then on_data(data) end
    end)
 end
 

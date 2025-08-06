@@ -10,7 +10,7 @@ function M.setup(config)
    M.config = config
 
    M.server = new_server(config)
-   M.server:start_server(function(msg) error(msg) end)
+   M.server:start_server()
 end
 
 
