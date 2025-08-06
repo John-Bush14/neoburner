@@ -14,7 +14,7 @@ end
 
 
 local function file_is_in_use(file)
-   local handle = io.popen("lsof " .. out_pipe_path .. " 2>/dev/null")
+   local handle = io.popen("lsof " .. file .. " 2>/dev/null")
    if not handle then error("couldn't get if websocket server was running.") end
 
    local result = handle:read("a") ~= ""
