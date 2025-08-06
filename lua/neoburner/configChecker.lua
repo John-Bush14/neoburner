@@ -26,13 +26,12 @@ end
 
 
 local str = "string"
+---@diagnostic disable-next-line: unused-local
 local int = 0
 
 
 function M.config(config)
    assert_config(config, "required", {
-      auth_token = str,
-      port = int,
       filesystem = str
    })
 
@@ -40,7 +39,8 @@ function M.config(config)
 
    assert_config(config, "optional", {
       address = "ws://127.0.0.1",
-      servers = {"home"}
+      servers = {"home"},
+      port = 12525,
    })
 end
 
