@@ -48,26 +48,28 @@ function SERVER:start_server()
    vim.loop.fs_open(out_pipe_path, "r", 438, function(_, fd)
       SERVER.in_pipe:open(fd)
 
-      vim.loop.read_start(SERVER.in_pipe, function(err, data)
+      vim.loop.read_start(SERVER.in_pipe, function(...) SERVER:on_message(...) end)
+   end)
+end
 
-         if err then error("Error occured while trying to read answer from " .. out_pipe_path .. ": " .. err) end
 
-         if data == nil then error("Something went wrong with websocat server (server stdout EOF)") end
+function SERVER:on_message(err, data)
+   if err then error("Error occured while trying to read answer from " .. out_pipe_path .. ": " .. err) end
 
-         -- json decode can't run in fast event context
-         vim.schedule(function()
+   if data == nil then error("Something went wrong with websocat server (server stdout EOF)") end
 
-            data = vim.fn.json_decode(data)
+   -- json decode can't run in fast event context
+   vim.schedule(function()
 
-            local answer_handler = SERVER.answer_handlers[data.id]
+      data = vim.fn.json_decode(data)
 
-            if answer_handler == nil then return end
+      local answer_handler = SERVER.answer_handlers[data.id]
 
-            if data.error then error("jsonrpc request returned error: " .. data.error) end
+      if answer_handler == nil then return end
 
-            answer_handler(data)
-         end)
-      end)
+      if data.error then error("jsonrpc request returned error: " .. data.error) end
+
+      answer_handler(data)
    end)
 end
 
