@@ -1,11 +1,11 @@
 local M = {}
 
 
-local inputChecker = require("neoburner.inputChecker")
+local configChecker = require("neoburner.configChecker")
 local new_server = require("neoburner.server")
 
 function M.setup(config)
-   inputChecker.config(config)
+   configChecker.config(config)
 
    M.config = config
 
