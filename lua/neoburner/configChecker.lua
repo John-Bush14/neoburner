@@ -39,8 +39,10 @@ function M.config(config)
 
    assert_config(config, "optional", {
       address = "ws://127.0.0.1",
-      servers = {"home"},
       port = 12525,
+      servers = {"home"},
+      root_server = "home",
+      servers_folder = "servers"
    })
 end
 

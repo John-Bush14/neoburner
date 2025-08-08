@@ -12,23 +12,27 @@
 ```lua
 require("neoburner").setup({
     -- needed
-    filesystem = "~/bitburner_files" -- where bitburner filesystem will be placed
+    filesystem = "~/bitburner_files", -- where bitburner filesystem will be placed
 
     -- optional
     address = "ws://127.0.0.1", -- = localhost
-    servers = {"home"} -- servers wich will be in filesystem, cannot be set to "*" because of api limitations.
-    port = "12525"
+    port = "12525",
+
+    servers = {"home"}, -- servers wich will be in filesystem, cannot be set to "*" because of api limitations.
+    root_server = "home", -- or nil
+    servers_folder = "servers", -- or nil
 })
 ```
 
 ## Commands
 
-##### :BBRam
+##### :BBRam ?\<file> ?\<server>
 
-Shows screen breaking down ram usage.
+Shows screen breaking down ram usage of \<file> on \<server>. 
+Default file is current buffer and default server is server of current buffer.
 
 
-##### :BBPull ?\<server>
+##### :BBPull ?\<server> 
 
 Overwrites all files or only the files of \<server> with the game's savefile's files.
 Can also be used to temporarily add a server to the filesystem without adding it to servers in config.
