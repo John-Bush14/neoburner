@@ -13,32 +13,18 @@ local function new(config)
 end
 
 
-local function file_is_in_use(file)
-   local handle = io.popen("lsof " .. file .. " 2>/dev/null")
-   if not handle then error("couldn't get if websocket server was running.") end
-
-   local result = handle:read("a") ~= ""
-
-   handle:close()
-
-   return result
-end
-
-
 function SERVER:start_server()
    os.execute("mkfifo " .. out_pipe_path .. " " .. in_pipe_path .. " 2>/dev/null")
 
-   if not file_is_in_use(out_pipe_path) then
-      local websocat_starter_filepath = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h:h:h") .. websocat_start_file
+   local websocat_starter_filepath = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h:h:h") .. websocat_start_file
 
-      local websocat_start_command = {"python3", websocat_starter_filepath, in_pipe_path, out_pipe_path, SERVER.port}
+   local websocat_start_command = {"python3", websocat_starter_filepath, in_pipe_path, out_pipe_path, SERVER.port}
 
-      vim.fn.jobstart(websocat_start_command, {
-         detach = true,
-         stdout = nil,
-         stderr = nil
-      })
-   end
+   vim.fn.jobstart(websocat_start_command, {
+      detach = true,
+      stdout = nil,
+      stderr = nil
+   })
 
    SERVER.in_pipe = vim.loop.new_pipe(false)
    SERVER.out_fd = io.open(in_pipe_path, "w+b")
