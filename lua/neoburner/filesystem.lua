@@ -20,13 +20,20 @@ function FS:refresh(server, SERVER)
    if server == FS.root_server then root = FS.root end
 
 
-         local fh = io.open(root .. file, "w+")
    SERVER:use_remote_method("getAllFiles", {server = server}, function(answer, _)
       for _, file in pairs(answer.result) do
+         local filepath = vim.fs.joinpath(root, file.filename)
+         local parent = vim.fn.fnamemodify(filepath, ":h")
 
-         assert(fh ~= nil, error("Problem opening up file '" .. file .. "' for server '" .. server .. "'"))
+         if vim.fn.isdirectory(parent) == 0 then os.execute("mkdir -p '" .. parent .. "'") end
 
-         fh.write(content)
+         local fh, err = io.open(filepath, "w+")
+
+         assert(fh and (not err), "Problem opening up file '" .. file.filename .. "' for server '" .. server .. "' with error '" .. tostring(err) .. "'")
+
+         fh:write(file.content)
+
+         fh:close()
       end
    end)
 end
