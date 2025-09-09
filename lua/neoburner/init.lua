@@ -3,6 +3,7 @@ local M = {}
 
 local configChecker = require("neoburner.configChecker")
 local new_server = require("neoburner.server")
+local new_filesystem = require("neoburner.filesystem")
 
 function M.setup(config)
    configChecker.config(config)
@@ -11,6 +12,8 @@ function M.setup(config)
 
    M.server = new_server(config)
    M.server:start_server()
+
+   M.filesystem = new_filesystem(config)
 end
 
 
