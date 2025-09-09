@@ -1,10 +1,5 @@
 local FS = {}
 
-local function exists(file)
-   local ok, _err, code = os.rename(file, file)
-   return ok or code == 13
-end
-
 function new(config)
    FS.root = config.filesystem
    FS.root_server = config.root_server
@@ -14,7 +9,8 @@ function new(config)
 end
 
 function FS.reinititialize()
-   if exists(FS.root) then vim.fs.rm(FS.root, {recursive = true, force = true}) end
+function FS:reinititialize()
+   os.execute('rm -rf "' .. FS.root .. '"')
 
    os.execute('mkdir -p "' .. vim.fs.joinpath(FS.root, FS.servers_folder) .. '"')
 end
