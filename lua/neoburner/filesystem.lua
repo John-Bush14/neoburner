@@ -10,19 +10,17 @@ function new(config)
    FS.root_server = config.root_server
    FS.servers_folder = config.servers_folder
 
-   if string.sub(FS.root, string.len(FS.root)) ~= "/" then FS.root = FS.root .. "/" end
-
    return FS
 end
 
 function FS.reinititialize()
    if exists(FS.root) then vim.fs.rm(FS.root, {recursive = true, force = true}) end
 
-   os.execute('mkdir -p "' .. FS.root .. FS.servers_folder .. '"')
+   os.execute('mkdir -p "' .. vim.fs.joinpath(FS.root, FS.servers_folder) .. '"')
 end
 
 function FS.refresh(server, SERVER)
-   local root = FS.root .. (FS.servers_folder and server ~= FS.root_server or "")
+   local root = vim.fs.joinpath(FS.root, FS.servers_folder and server ~= FS.root_server or "")
 
    local files =  SERVER:use_remote_method("get_all_files", {server = server})
 
