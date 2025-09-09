@@ -8,7 +8,6 @@ function new(config)
    return FS
 end
 
-function FS.reinititialize()
 function FS:reinititialize()
    os.execute('rm -rf "' .. FS.root .. '"')
 
