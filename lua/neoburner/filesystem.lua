@@ -15,10 +15,11 @@ function FS:reinititialize()
    os.execute('mkdir -p "' .. vim.fs.joinpath(FS.root, FS.servers_folder) .. '"')
 end
 
-function FS.refresh(server, SERVER)
-   local root = vim.fs.joinpath(FS.root, FS.servers_folder and server ~= FS.root_server or "")
+function FS:refresh(server, SERVER)
+   local root = vim.fs.joinpath(FS.root, FS.servers_folder)
 
    local files =  SERVER:use_remote_method("get_all_files", {server = server})
+   if server == FS.root_server then root = FS.root end
 
    for file, content in pairs(files) do
       local fh = io.open(root .. file, "w+")
