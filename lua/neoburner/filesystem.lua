@@ -17,16 +17,18 @@ end
 function FS:refresh(server, SERVER)
    local root = vim.fs.joinpath(FS.root, FS.servers_folder)
 
-   local files =  SERVER:use_remote_method("get_all_files", {server = server})
    if server == FS.root_server then root = FS.root end
 
-   for file, content in pairs(files) do
-      local fh = io.open(root .. file, "w+")
 
-      assert(fh ~= nil, error("Problem opening up file '" .. file .. "' for server '" .. server .. "'"))
+   SERVER:use_remote_method("get_all_files", {server = server}, function(files, _)
+      for file, content in pairs(files) do
+         local fh = io.open(root .. file, "w+")
 
-      fh.write(content)
-   end
+         assert(fh ~= nil, error("Problem opening up file '" .. file .. "' for server '" .. server .. "'"))
+
+         fh.write(content)
+      end
+   end)
 end
 
 return new
