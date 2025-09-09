@@ -20,9 +20,9 @@ function FS:refresh(server, SERVER)
    if server == FS.root_server then root = FS.root end
 
 
-   SERVER:use_remote_method("get_all_files", {server = server}, function(files, _)
-      for file, content in pairs(files) do
          local fh = io.open(root .. file, "w+")
+   SERVER:use_remote_method("getAllFiles", {server = server}, function(answer, _)
+      for _, file in pairs(answer.result) do
 
          assert(fh ~= nil, error("Problem opening up file '" .. file .. "' for server '" .. server .. "'"))
 
