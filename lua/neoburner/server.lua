@@ -12,7 +12,6 @@ local function new(config)
    return SERVER
 end
 
-
 function SERVER:start_server()
    os.execute("mkfifo " .. out_pipe_path .. " " .. in_pipe_path .. " 2>/dev/null")
 
@@ -46,12 +45,15 @@ function SERVER:on_message(err, data)
 
    -- json decode can't run in fast event context
    vim.schedule(function()
+      if string.find(data, "(os error 98)") ~= nil then return end
 
       data = vim.fn.json_decode(data)
+
 
       local answer_handler = SERVER.answer_handlers[data.id]
 
       if answer_handler == nil then return end
+
 
       if data.error then error("jsonrpc request returned error: " .. data.error) end
 
