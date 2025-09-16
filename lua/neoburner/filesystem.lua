@@ -11,6 +11,14 @@ end
 function FS:reinititialize()
    os.execute('rm -rf "' .. FS.root .. '"')
 
+function table.map(t, f)
+   local result
+
+   for k, e in pairs(t) do result[k] = f(e) end
+
+   return result
+end
+
    os.execute('mkdir -p "' .. vim.fs.joinpath(FS.root, FS.servers_folder) .. '"')
 end
 
