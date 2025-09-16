@@ -19,6 +19,17 @@ function table.map(t, f)
    return result
 end
 
+function table.contains(t1, t2)
+   for _, e2 in pairs(t2) do
+      local contains_element = false
+      for _, e1 in pairs(t1) do
+         if e1 == e2 then contains_element = true end
+      end
+      if not contains_element then return false end
+   end
+   return true
+end
+
    os.execute('mkdir -p "' .. vim.fs.joinpath(FS.root, FS.servers_folder) .. '"')
 end
 
