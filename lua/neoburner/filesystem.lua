@@ -35,21 +35,20 @@ function FS:refresh(server, SERVER)
 
 
    SERVER:use_remote_method("getAllFiles", {server = server}, function(answer, _)
-      local files = answer.result
+      local filepaths = table.map(answer.result, function(file) return vim.fs.joinpath(root, file.filename) end)
 
-      clean_up_forsaken_files(root, table.map(files, function(file) return file.filename end))
+      clean_up_forsaken_files(root, filepaths)
 
-      for _, file in pairs(files) do
-         local filepath = vim.fs.joinpath(root, file.filename)
+      for k, filepath in pairs(filepaths) do
          local parent = vim.fs.dirname(filepath)
 
          if vim.fn.isdirectory(parent) == 0 then os.execute("mkdir -p '" .. parent .. "'") end
 
          local fh, err = io.open(filepath, "w+")
 
-         assert(fh and (not err), "Problem opening up file '" .. file.filename .. "' for server '" .. server .. "' with error '" .. tostring(err) .. "'")
+         assert(fh and (not err), "Problem opening up file '" .. filepath .. "' for server '" .. server .. "' with error '" .. tostring(err) .. "'")
 
-         fh:write(file.content)
+         fh:write(answer.result[k].content)
 
          fh:close()
       end
