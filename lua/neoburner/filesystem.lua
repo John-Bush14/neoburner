@@ -1,5 +1,7 @@
 local FS = {}
 
+require("neoburner.shared").extend(table)
+
 local function new(config)
    FS.root = vim.fs.normalize(config.filesystem)
    FS.root_server = config.root_server
@@ -25,24 +27,6 @@ local function clean_up_forsaken_files(directory, rightful_files)
    until filename == nil
 end
 
-function table.map(t, f)
-   local result
-
-   for k, e in pairs(t) do result[k] = f(e) end
-
-   return result
-end
-
-function table.contains(t1, t2)
-   for _, e2 in pairs(t2) do
-      local contains_element = false
-      for _, e1 in pairs(t1) do
-         if e1 == e2 then contains_element = true end
-      end
-      if not contains_element then return false end
-   end
-   return true
-end
 
 function FS:refresh(server, SERVER)
    local root = vim.fs.joinpath(FS.servers_folder, server)
