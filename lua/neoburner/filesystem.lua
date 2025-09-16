@@ -1,6 +1,6 @@
 local FS = {}
 
-function new(config)
+local function new(config)
    FS.root = config.filesystem
    FS.root_server = config.root_server
    FS.servers_folder = config.servers_folder
@@ -8,8 +8,20 @@ function new(config)
    return FS
 end
 
-function FS:reinititialize()
-   os.execute('rm -rf "' .. FS.root .. '"')
+local function clean_up_forsaken_files(folder, rightful_files)
+   local dir, filename, type = vim.fs.dir(folder, {depth = math.maxinteger}), "", ""
+
+   repeat
+      local filepath = vim.fs.join(folder, filename)
+
+      if type == "file" and not table.contains(rightful_files, filepath) then
+         vim.fs.rm(filepath)
+      end
+
+      ---@diagnostic disable-next-line: cast-local-type
+      filename, type = dir()
+   until filename == nil
+end
 
 function table.map(t, f)
    local result
@@ -30,6 +42,7 @@ function table.contains(t1, t2)
    return true
 end
 
+function FS:reinititialize()
    os.execute('mkdir -p "' .. vim.fs.joinpath(FS.root, FS.servers_folder) .. '"')
 end
 
@@ -40,7 +53,11 @@ function FS:refresh(server, SERVER)
 
 
    SERVER:use_remote_method("getAllFiles", {server = server}, function(answer, _)
-      for _, file in pairs(answer.result) do
+      local files = answer.result
+
+      clean_up_forsaken_files(root, table.map(files, function(file) return file.filename end))
+
+      for _, file in pairs(files) do
          local filepath = vim.fs.joinpath(root, file.filename)
          local parent = vim.fn.fnamemodify(filepath, ":h")
 
