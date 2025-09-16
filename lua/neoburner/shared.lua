@@ -1,8 +1,10 @@
 return {extend = function(table)
    function table.contains(t, v)
-      for _, e in pairs(t) do if t == v then return false end end
+      for _, e in pairs(t) do
+         if e == v then return true end
+      end
 
-      return true
+      return false
    end
 
    function table.map(t, f)
