@@ -14,8 +14,6 @@ function M.setup(config)
    M.server:start_server()
 
    M.filesystem = new_filesystem(config)
-   M.filesystem:reinititialize()
-
    for _, server in pairs(config.servers) do
       M.filesystem:refresh(server, M.server)
    end

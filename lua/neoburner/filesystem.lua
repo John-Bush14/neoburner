@@ -3,16 +3,18 @@ local FS = {}
 local function new(config)
    FS.root = vim.fs.normalize(config.filesystem)
    FS.root_server = config.root_server
-   FS.servers_folder = vim.fs.join(FS.root, config.servers_folder)
+   FS.servers_folder = vim.fs.joinpath(FS.root, config.servers_folder)
 
    return FS
 end
 
-local function clean_up_forsaken_files(folder, rightful_files)
-   local dir, filename, type = vim.fs.dir(folder, {depth = math.maxinteger}), "", ""
+local function clean_up_forsaken_files(directory, rightful_files)
+   if not vim.fn.isdirectory(directory) then return end
+
+   local dir, filename, type = vim.fs.dir(directory, {depth = math.maxinteger}), "", ""
 
    repeat
-      local filepath = vim.fs.join(directory, filename)
+      local filepath = vim.fs.joinpath(directory, filename)
 
       if type == "file" and not table.contains(rightful_files, filepath) then
          vim.fs.rm(filepath)
@@ -42,12 +44,8 @@ function table.contains(t1, t2)
    return true
 end
 
-function FS:reinititialize()
-   os.execute('mkdir -p "' .. vim.fs.joinpath(FS.root, FS.servers_folder) .. '"')
-end
-
 function FS:refresh(server, SERVER)
-   local root = vim.fs.joinpath(FS.root, FS.servers_folder)
+   local root = vim.fs.joinpath(FS.servers_folder, server)
 
    if server == FS.root_server then root = FS.root end
 
@@ -59,7 +57,7 @@ function FS:refresh(server, SERVER)
 
       for _, file in pairs(files) do
          local filepath = vim.fs.joinpath(root, file.filename)
-         local parent = vim.fn.fnamemodify(filepath, ":h")
+         local parent = vim.fs.dirname(filepath)
 
          if vim.fn.isdirectory(parent) == 0 then os.execute("mkdir -p '" .. parent .. "'") end
 
