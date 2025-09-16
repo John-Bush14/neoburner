@@ -3,7 +3,7 @@ local FS = {}
 local function new(config)
    FS.root = vim.fs.normalize(config.filesystem)
    FS.root_server = config.root_server
-   FS.servers_folder = config.servers_folder
+   FS.servers_folder = vim.fs.join(FS.root, config.servers_folder)
 
    return FS
 end
@@ -12,7 +12,7 @@ local function clean_up_forsaken_files(folder, rightful_files)
    local dir, filename, type = vim.fs.dir(folder, {depth = math.maxinteger}), "", ""
 
    repeat
-      local filepath = vim.fs.join(folder, filename)
+      local filepath = vim.fs.join(directory, filename)
 
       if type == "file" and not table.contains(rightful_files, filepath) then
          vim.fs.rm(filepath)
