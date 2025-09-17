@@ -29,11 +29,16 @@ end
 
 function FS:set_up_autocmds(server) end
 
-function FS:refresh(server, SERVER)
+function FS:get_server_root(server)
    local root = vim.fs.joinpath(FS.servers_folder, server)
 
    if server == FS.root_server then root = FS.root end
 
+   return root
+end
+
+function FS:refresh(server, SERVER)
+   local root = FS.get_server_root(server)
 
    SERVER:use_remote_method("getAllFiles", {server = server}, function(answer, _)
       local filepaths = table.map(answer.result, function(file) return vim.fs.joinpath(root, file.filename) end)
