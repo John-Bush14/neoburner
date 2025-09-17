@@ -27,6 +27,7 @@ local function clean_up_forsaken_files(directory, rightful_files)
    until filename == nil
 end
 
+function FS:set_up_autocmds(server) end
 
 function FS:refresh(server, SERVER)
    local root = vim.fs.joinpath(FS.servers_folder, server)
@@ -53,6 +54,8 @@ function FS:refresh(server, SERVER)
          fh:close()
       end
    end)
+
+   FS:set_up_autocmds(server)
 end
 
 return new
