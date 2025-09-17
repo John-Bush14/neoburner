@@ -19,13 +19,13 @@ function M.setup(config)
    end
 end
 
-
 function M.show_ram()
    M.server:use_remote_method("getFile", {filename = "spread.js", server = "home"}, function(data) print(data.result) end)
 end
 
 
 function M.pull_files(server)
+   M.filesystem:refresh(server, M.server)
 end
 
 function M.push_files(server)
