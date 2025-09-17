@@ -27,14 +27,21 @@ local function clean_up_forsaken_files(directory, rightful_files)
    until filename == nil
 end
 
-function FS:set_up_autocmds(server) end
-
 function FS:get_server_root(server)
    local root = vim.fs.joinpath(FS.servers_folder, server)
 
    if server == FS.root_server then root = FS.root end
 
    return root
+end
+
+local autocmds = {}
+function FS:set_up_autocmds(server)
+   for event, callback in pairs(autocmds) do
+      vim.api.nvim_create_autocmd(event, {
+         callback, pattern = vim.fs.joinpath(FS:get_server_root(server), "*")
+      })
+   end
 end
 
 function FS:refresh(server, SERVER)
