@@ -50,14 +50,12 @@ function SERVER:on_message(err, data)
       data = vim.fn.json_decode(data)
 
 
-      local answer_handler = SERVER.answer_handlers[data.id]
-
-      if answer_handler == nil then return end
-
-
       if data.error then error("jsonrpc request returned error: " .. data.error) end
 
-      answer_handler(data)
+
+      local answer_handler = SERVER.answer_handlers[data.id]
+
+      if answer_handler ~= nil then answer_handler(data) end
    end)
 end
 
