@@ -36,10 +36,11 @@ function FS:get_server_root(server)
 end
 
 local autocmds = {}
-function FS:set_up_autocmds(server)
+function FS:set_up_autocmds(server, SERVER)
    for event, callback in pairs(autocmds) do
       vim.api.nvim_create_autocmd(event, {
-         callback, pattern = vim.fs.joinpath(FS:get_server_root(server), "*")
+         pattern = vim.fs.joinpath(FS:get_server_root(server), "*"),
+         callback = function(ev) callback(ev.match, server, SERVER) end
       })
    end
 end
@@ -67,7 +68,7 @@ function FS:refresh(server, SERVER)
       end
    end)
 
-   FS:set_up_autocmds(server)
+   FS:set_up_autocmds(server, SERVER)
 end
 
 return new
