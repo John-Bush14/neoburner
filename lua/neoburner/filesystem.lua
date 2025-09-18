@@ -39,11 +39,11 @@ local autocmds = {}
 function FS:set_up_autocmds(server, SERVER)
    local pattern = vim.fs.joinpath(FS:get_server_root(server), "*")
 
-   vim.api.nvim_clear_autocmds({pattern})
+   vim.api.nvim_clear_autocmds({pattern = pattern})
 
    for event, remote_method in pairs(autocmds) do
       vim.api.nvim_create_autocmd(event, {
-         pattern, callback = function(ev)
+         pattern = pattern, callback = function(ev)
             SERVER:use_remote_method(remote_method, {file = ev.match, server})
          end
       })
