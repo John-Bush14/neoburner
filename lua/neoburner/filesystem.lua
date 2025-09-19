@@ -36,18 +36,20 @@ function FS:get_server_root(server)
 end
 
 local autocmds = {
-   ["BufWrite"] = "pushFile"
+   ["BufWrite"] = {"pushFile"}
 }
 function FS:set_up_autocmds(server, SERVER)
    local pattern = vim.fs.joinpath(FS:get_server_root(server), "*")
 
    vim.api.nvim_clear_autocmds({pattern = pattern})
 
-   for event, remote_method in pairs(autocmds) do
+   for event, action in pairs(autocmds) do
       vim.api.nvim_create_autocmd(event, {
          pattern = pattern, callback = function(ev)
+            local remote_method, callback = action[1], action[2]
+
             local content = (remote_method == "pushFile") and table.concat(vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false), "\n")
-            SERVER:use_remote_method(remote_method, {filename = ev.file, server = server, content = content})
+            SERVER:use_remote_method(remote_method, {filename = ev.file, server = server, content = content}, callback)
          end
          })
    end
