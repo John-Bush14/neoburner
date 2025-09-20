@@ -14,9 +14,6 @@ function M.setup(config)
    M.server:start_server()
 
    M.filesystem = new_filesystem(config)
-   for _, server in pairs(config.servers) do
-      M.filesystem:refresh(server, M.server)
-   end
 end
 
 function M.show_ram()
@@ -25,7 +22,9 @@ end
 
 
 function M.pull_files(server)
-   M.filesystem:refresh(server, M.server)
+   for _, server in pairs({server} or config.servers) do
+      M.filesystem:refresh(server, M.server)
+   end
 end
 
 function M.push_files(server)
