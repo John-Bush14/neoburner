@@ -14,20 +14,27 @@ function M.setup(config)
    M.server:start_server()
 
    M.filesystem = new_filesystem(config)
-end
-
-function M.show_ram()
-   M.server:use_remote_method("getFile", {filename = "spread.js", server = "home"}, function(data) print(data.result) end)
-end
 
 
-function M.pull_files(server)
-   for _, server in pairs({server} or config.servers) do
-      M.filesystem:refresh(server, M.server)
-   end
-end
+   vim.api.nvim_create_user_command("BBPull",
+      function(input)
+         local servers = input.fargs
 
-function M.push_files(server)
+         for _, server in pairs(servers or config.servers) do
+            M.filesystem:refresh(server, M.server)
+         end
+      end, {nargs = "*"}
+   )
+
+   vim.api.nvim_create_user_command("BBRam",
+      function(input)
+         M.server:use_remote_method("getFile", {filename = "spread.js", server = "home"}, function(data) print(data.result) end)
+      end, {}
+   )
+
+   vim.api.nvim_create_user_command("BBPush",
+      function(input) end, {nargs = "*"}
+   )
 end
 
 
