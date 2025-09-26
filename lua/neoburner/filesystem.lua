@@ -48,6 +48,8 @@ function FS:set_up_autocmds(server, SERVER)
          pattern = pattern, callback = function(ev)
             local remote_method, callback = action[1], action[2]
 
+            if callback ~= nil then callback = function(result) callback(result, ev.buf) end end
+
             local content = (remote_method == "pushFile") and table.concat(vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false), "\n")
             SERVER:use_remote_method(remote_method, {filename = ev.file, server = server, content = content}, callback)
          end
