@@ -36,7 +36,10 @@ function FS:get_server_root(server)
 end
 
 local autocmds = {
-   ["BufWrite"] = {"pushFile"}
+   ["BufWrite"] = {"pushFile"},
+   ["BufReadPost"] = {"getFile", function(result, buffer)
+      vim.api.nvim_buf_set_text(buffer, 0, 0, -1, -1, result.content)
+   end}
 }
 function FS:set_up_autocmds(server, SERVER)
    local pattern = vim.fs.joinpath(FS:get_server_root(server), "*")
